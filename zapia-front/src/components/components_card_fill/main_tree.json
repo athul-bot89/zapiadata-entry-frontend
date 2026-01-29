@@ -1,0 +1,1062 @@
+{
+  "name": "root",
+  "no_of_points": "None",
+  "min_condition": "None",
+  "max_condition": "None",
+  "ismajor": "false",
+  "conditions": [],
+  "categories": [
+    {
+      "name": "upi transaction",
+      "no_of_points": "None",
+      "min_condition": "None",
+      "max_condition": "None",
+      "ismajor": "false",
+      "conditions": []
+    },
+    {
+      "name": "Online Shopping",
+      "no_of_points": "None",
+      "min_condition": "None",
+      "max_condition": "None",
+      "ismajor": "false",
+      "conditions": [],
+      "subcategories": [
+        {
+          "name": "Amazon",
+          "no_of_points": "None",
+          "min_condition": "None",
+          "max_condition": "None",
+          "ismajor": "false",
+          "conditions": [],
+          "services": [
+            {
+              "name": "Groceries",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            },
+            {
+              "name": "Electronics",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            },
+            {
+              "name": "Fashion",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            },
+            {
+              "name": "Pharmacy",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            }
+          ]
+        },
+        {
+          "name": "Amazon Prime",
+          "no_of_points": "None",
+          "min_condition": "None",
+          "max_condition": "None",
+          "ismajor": "false",
+          "conditions": [],
+          "services": [
+            {
+              "name": "Groceries",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            },
+            {
+              "name": "Electronics",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            },
+            {
+              "name": "Fashion",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            },
+            {
+              "name": "Pharmacy",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            }
+          ]
+        },
+        {
+          "name": "Flipkart",
+          "no_of_points": "None",
+          "min_condition": "None",
+          "max_condition": "None",
+          "ismajor": "false",
+          "conditions": [],
+          "services": [
+            {
+              "name": "Groceries",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            },
+            {
+              "name": "Electronics",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            },
+            {
+              "name": "Fashion",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            },
+            {
+              "name": "Pharmacy",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            }
+          ]
+        },
+        {
+          "name": "Myntra",
+          "no_of_points": "None",
+          "min_condition": "None",
+          "max_condition": "None",
+          "ismajor": "false",
+          "conditions": [],
+          "services": [
+            {
+              "name": "Fashion",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            }
+          ]
+        },
+        {
+          "name": "Shoppers Stop",
+          "no_of_points": "None",
+          "min_condition": "None",
+          "max_condition": "None",
+          "ismajor": "false",
+          "conditions": [],
+          "services": [
+            {
+              "name": "Fashion",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            },
+            {
+              "name": "Beauty",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            },
+            {
+              "name": "Jewellery",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            }
+          ]
+        },
+        {
+          "name": "Croma",
+          "no_of_points": "None",
+          "min_condition": "None",
+          "max_condition": "None",
+          "ismajor": "false",
+          "conditions": [],
+          "services": [
+            {
+              "name": "Electronics",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            }
+          ]
+        },
+        {
+          "name": "Reliance Digital",
+          "no_of_points": "None",
+          "min_condition": "None",
+          "max_condition": "None",
+          "ismajor": "false",
+          "conditions": [],
+          "services": [
+            {
+              "name": "Electronics",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            }
+          ]
+        },
+        {
+          "name": "BigBasket",
+          "no_of_points": "None",
+          "min_condition": "None",
+          "max_condition": "None",
+          "ismajor": "false",
+          "conditions": [],
+          "services": [
+            {
+              "name": "Groceries",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            }
+          ]
+        },
+        {
+          "name": "Blinkit",
+          "no_of_points": "None",
+          "min_condition": "None",
+          "max_condition": "None",
+          "ismajor": "false",
+          "conditions": [],
+          "services": [
+            {
+              "name": "Groceries",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            }
+          ]
+        },
+        {
+          "name": "Tata Neu",
+          "no_of_points": "None",
+          "min_condition": "None",
+          "max_condition": "None",
+          "ismajor": "false",
+          "conditions": [],
+          "services": [
+            {
+              "name": "Groceries",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            },
+            {
+              "name": "Electronics",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            },
+            {
+              "name": "Fashion",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            },
+            {
+              "name": "Pharmacy",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            },
+            {
+              "name": "Beauty",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            }
+          ]
+        },
+        {
+          "name": "Tata 1mg",
+          "no_of_points": "None",
+          "min_condition": "None",
+          "max_condition": "None",
+          "ismajor": "false",
+          "conditions": [],
+          "services": [
+            {
+              "name": "Pharmacy",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            }
+          ]
+        },
+        {
+          "name": "Nykaa",
+          "no_of_points": "None",
+          "min_condition": "None",
+          "max_condition": "None",
+          "ismajor": "false",
+          "conditions": [],
+          "services": [
+            {
+              "name": "Fashion",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            },
+            {
+              "name": "Beauty",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            }
+          ]
+        },
+        {
+          "name": "Ajio",
+          "no_of_points": "None",
+          "min_condition": "None",
+          "max_condition": "None",
+          "ismajor": "false",
+          "conditions": [],
+          "services": [
+            {
+              "name": "Fashion",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            }
+          ]
+        },
+        {
+          "name": "Westside",
+          "no_of_points": "None",
+          "min_condition": "None",
+          "max_condition": "None",
+          "ismajor": "false",
+          "conditions": [],
+          "services": [
+            {
+              "name": "Fashion",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            }
+          ]
+        },
+        {
+          "name": "Marks & Spencer",
+          "no_of_points": "None",
+          "min_condition": "None",
+          "max_condition": "None",
+          "ismajor": "false",
+          "conditions": [],
+          "services": [
+            {
+              "name": "Fashion",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            }
+          ]
+        },
+        {
+          "name": "Titan",
+          "no_of_points": "None",
+          "min_condition": "None",
+          "max_condition": "None",
+          "ismajor": "false",
+          "conditions": [],
+          "services": [
+            {
+              "name": "Fashion",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            }
+          ]
+        },
+        {
+          "name": "Tira",
+          "no_of_points": "None",
+          "min_condition": "None",
+          "max_condition": "None",
+          "ismajor": "false",
+          "conditions": [],
+          "services": [
+            {
+              "name": "Fashion",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            }
+          ]
+        },
+        {
+          "name": "Others",
+          "no_of_points": "None",
+          "min_condition": "None",
+          "max_condition": "None",
+          "ismajor": "false",
+          "conditions": [],
+          "services": [
+            {
+              "name": "Groceries",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            },
+            {
+              "name": "Electronics",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            },
+            {
+              "name": "Fashion",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            },
+            {
+              "name": "Pharmacy",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            },
+            {
+              "name": "Beauty",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Food & Dining",
+      "no_of_points": "None",
+      "min_condition": "None",
+      "max_condition": "None",
+      "ismajor": "false",
+      "conditions": [],
+      "subcategories": [
+        {
+          "name": "Food Delivery",
+          "no_of_points": "None",
+          "min_condition": "None",
+          "max_condition": "None",
+          "ismajor": "false",
+          "conditions": [],
+          "services": [
+            {
+              "name": "Swiggy",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            },
+            {
+              "name": "Zomato",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            },
+            {
+              "name": "Qmin",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            },
+            {
+              "name": "Others",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            }
+          ]
+        },
+        {
+          "name": "Dining",
+          "no_of_points": "None",
+          "min_condition": "None",
+          "max_condition": "None",
+          "ismajor": "false",
+          "conditions": [],
+          "services": [
+            {
+              "name": "Starbucks",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            },
+            {
+              "name": "EazyDiner",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            },
+            {
+              "name": "District",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            },
+            {
+              "name": "ITC Culinaire",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Entertainment",
+      "no_of_points": "None",
+      "min_condition": "None",
+      "max_condition": "None",
+      "ismajor": "false",
+      "conditions": [],
+      "subcategories": [
+        {
+          "name": "Movie Tickets",
+          "no_of_points": "None",
+          "min_condition": "None",
+          "max_condition": "None",
+          "ismajor": "false",
+          "conditions": [],
+          "services": [
+            {
+              "name": "BookMyShow",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            },
+            {
+              "name": "PVR",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            },
+            {
+              "name": "District",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            },
+            {
+              "name": "Others",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            }
+          ]
+        },
+        {
+          "name": "OTT",
+          "no_of_points": "None",
+          "min_condition": "None",
+          "max_condition": "None",
+          "ismajor": "false",
+          "conditions": [],
+          "services": [
+            {
+              "name": "Amazon Prime Video",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            },
+            {
+              "name": "Others",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            }
+          ]
+        },
+        {
+          "name": "DTH",
+          "no_of_points": "None",
+          "min_condition": "None",
+          "max_condition": "None",
+          "ismajor": "false",
+          "conditions": [],
+          "services": [
+            {
+              "name": "Tata Play",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            },
+            {
+              "name": "Others",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Travel",
+      "no_of_points": "None",
+      "min_condition": "None",
+      "max_condition": "None",
+      "ismajor": "false",
+      "conditions": [],
+      "subcategories": [
+        {
+          "name": "Flights",
+          "no_of_points": "None",
+          "min_condition": "None",
+          "max_condition": "None",
+          "ismajor": "false",
+          "conditions": [],
+          "services": [
+            {
+              "name": "Air India",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            },
+            {
+              "name": "Air India Express",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            },
+            {
+              "name": "Vistara Airlines",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            },
+            {
+              "name": "SpiceJet",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            }
+          ]
+        },
+        {
+          "name": "Hotels",
+          "no_of_points": "None",
+          "min_condition": "None",
+          "max_condition": "None",
+          "ismajor": "false",
+          "conditions": [],
+          "services": [
+            {
+              "name": "IHCL",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            },
+            {
+              "name": "Taj Hotels",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            },
+            {
+              "name": "Marriott",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            },
+            {
+              "name": "Oberoi",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            },
+            {
+              "name": "Postcard",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            },
+            {
+              "name": "AccorPlus",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            }
+          ]
+        },
+        {
+          "name": "Taxi",
+          "no_of_points": "None",
+          "min_condition": "None",
+          "max_condition": "None",
+          "ismajor": "false",
+          "conditions": [],
+          "services": [
+            {
+              "name": "Uber",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            },
+            {
+              "name": "Ola",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            }
+          ]
+        },
+        {
+          "name": "Bus / Train / Aggregators",
+          "no_of_points": "None",
+          "min_condition": "None",
+          "max_condition": "None",
+          "ismajor": "false",
+          "conditions": [],
+          "services": [
+            {
+              "name": "MakeMyTrip",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            },
+            {
+              "name": "Yatra",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            },
+            {
+              "name": "EaseMyTrip",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            },
+            {
+              "name": "ClearTrip",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            },
+            {
+              "name": "IRCTC",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Fuel",
+      "no_of_points": "None",
+      "min_condition": "None",
+      "max_condition": "None",
+      "ismajor": "false",
+      "conditions": [],
+      "services": [
+        {
+          "name": "BPCL",
+          "no_of_points": "None",
+          "min_condition": "None",
+          "max_condition": "None",
+          "ismajor": "false",
+          "conditions": []
+        },
+        {
+          "name": "HPCL",
+          "no_of_points": "None",
+          "min_condition": "None",
+          "max_condition": "None",
+          "ismajor": "false",
+          "conditions": []
+        },
+        {
+          "name": "IndianOil",
+          "no_of_points": "None",
+          "min_condition": "None",
+          "max_condition": "None",
+          "ismajor": "false",
+          "conditions": []
+        },
+        {
+          "name": "Others",
+          "no_of_points": "None",
+          "min_condition": "None",
+          "max_condition": "None",
+          "ismajor": "false",
+          "conditions": []
+        }
+      ]
+    },
+    {
+      "name": "Jewellery",
+      "no_of_points": "None",
+      "min_condition": "None",
+      "max_condition": "None",
+      "ismajor": "false",
+      "conditions": [],
+      "services": [
+        {
+          "name": "Tanishq",
+          "no_of_points": "None",
+          "min_condition": "None",
+          "max_condition": "None",
+          "ismajor": "false",
+          "conditions": []
+        },
+        {
+          "name": "Shoppers Stop",
+          "no_of_points": "None",
+          "min_condition": "None",
+          "max_condition": "None",
+          "ismajor": "false",
+          "conditions": []
+        },
+        {
+          "name": "Others",
+          "no_of_points": "None",
+          "min_condition": "None",
+          "max_condition": "None",
+          "ismajor": "false",
+          "conditions": []
+        }
+      ]
+    },
+    {
+      "name": "Utilities & Services",
+      "no_of_points": "None",
+      "min_condition": "None",
+      "max_condition": "None",
+      "ismajor": "false",
+      "conditions": [],
+      "subcategories": [
+        {
+          "name": "LPG Booking",
+          "no_of_points": "None",
+          "min_condition": "None",
+          "max_condition": "None",
+          "ismajor": "false",
+          "conditions": [],
+          "services": [
+            {
+              "name": "Bharat Gas",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            },
+            {
+              "name": "Others",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            }
+          ]
+        },
+        {
+          "name": "Educational Services",
+          "no_of_points": "None",
+          "min_condition": "None",
+          "max_condition": "None",
+          "ismajor": "false",
+          "conditions": [],
+          "services": [
+            {
+              "name": "Others",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            }
+          ]
+        },
+        {
+          "name": "Insurance",
+          "no_of_points": "None",
+          "min_condition": "None",
+          "max_condition": "None",
+          "ismajor": "false",
+          "conditions": [],
+          "services": [
+            {
+              "name": "Others",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            }
+          ]
+        },
+        {
+          "name": "Government MCC",
+          "no_of_points": "None",
+          "min_condition": "None",
+          "max_condition": "None",
+          "ismajor": "false",
+          "conditions": [],
+          "services": [
+            {
+              "name": "Others",
+              "no_of_points": "None",
+              "min_condition": "None",
+              "max_condition": "None",
+              "ismajor": "false",
+              "conditions": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
