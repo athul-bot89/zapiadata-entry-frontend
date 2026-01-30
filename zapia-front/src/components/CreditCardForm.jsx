@@ -3,11 +3,14 @@ import Step1Bank from './components_card_fill/Step1Bank';
 import Step2Details from './components_card_fill/Step2Details';
 import Step3 from './components_card_fill/Step3';
 import Step4 from './components_card_fill/Step4';
+import Step5 from './components_card_fill/Step5';
+import Step6 from './components_card_fill/Step6';
+import Step7 from './components_card_fill/Step7';
 
 const CreditCardForm = () => {
   // Step management
   const [currentStep, setCurrentStep] = useState(1);
-  const totalSteps = 4;
+  const totalSteps = 7;
 
   // Shared form data
   const [formData, setFormData] = useState({
@@ -27,6 +30,15 @@ const CreditCardForm = () => {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
     }
+  };
+
+  // Reset form to start over
+  const resetForm = () => {
+    setCurrentStep(1);
+    setFormData({
+      bankId: "",
+      bankName: "",
+    });
   };
 
   // Render step component based on current step
@@ -64,11 +76,32 @@ const CreditCardForm = () => {
             formData={formData}
             setFormData={setFormData}
             onPrev={prevStep}
-            onNext={() => {
-              // Handle completion or move to a success page
-              alert('All steps completed successfully!');
-              // You can add logic here to reset or redirect
-            }}
+            onNext={nextStep}
+          />
+        );
+      case 5:
+        return (
+          <Step5
+            formData={formData}
+            setFormData={setFormData}
+            onPrev={prevStep}
+            onNext={nextStep}
+          />
+        );
+      case 6:
+        return (
+          <Step6
+            formData={formData}
+            setFormData={setFormData}
+            onPrev={prevStep}
+            onNext={nextStep}
+          />
+        );
+      case 7:
+        return (
+          <Step7
+            formData={formData}
+            onReset={resetForm}
           />
         );
       default:
@@ -82,26 +115,28 @@ const CreditCardForm = () => {
         Credit Card Form
       </h2>
       
-      {/* Step indicator */}
-      <div className="mb-6">
-        <div className="flex justify-between items-center">
-          <span className="text-sm text-gray-500">
-            Step {currentStep} of {totalSteps}
-          </span>
-          <div className="flex space-x-2">
-            {[...Array(totalSteps)].map((_, index) => (
-              <div
-                key={index}
-                className={`h-2 w-8 rounded ${
-                  index < currentStep
-                    ? 'bg-blue-600'
-                    : 'bg-gray-300'
-                }`}
-              />
-            ))}
+      {/* Step indicator - hide on final thank you step */}
+      {currentStep < 7 && (
+        <div className="mb-6">
+          <div className="flex justify-between items-center">
+            <span className="text-sm text-gray-500">
+              Step {currentStep} of {totalSteps - 1}
+            </span>
+            <div className="flex space-x-2">
+              {[...Array(totalSteps - 1)].map((_, index) => (
+                <div
+                  key={index}
+                  className={`h-2 w-8 rounded ${
+                    index < currentStep
+                      ? 'bg-blue-600'
+                      : 'bg-gray-300'
+                  }`}
+                />
+              ))}
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Render current step */}
       {renderStep()}
