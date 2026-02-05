@@ -18,23 +18,70 @@ const customStyles = `
   }
   
   .custom-scrollbar::-webkit-scrollbar {
-    width: 10px;
+    width: 8px;
   }
   
   .custom-scrollbar::-webkit-scrollbar-track {
-    background: linear-gradient(to bottom, #f3f4f6, #e5e7eb);
+    background: #f9fafb;
     border-radius: 10px;
   }
   
   .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: linear-gradient(to bottom, #3b82f6, #6366f1);
+    background: #d1d5db;
     border-radius: 10px;
-    border: 2px solid #f3f4f6;
   }
   
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(to bottom, #2563eb, #4f46e5);
+    background: #9ca3af;
   }
+  
+  .tree-chevron {
+    transition: transform 0.2s ease-in-out;
+  }
+  
+  .tree-chevron-expanded {
+    transform: rotate(90deg);
+  }
+  
+  .tree-line {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: #0b40df;
+  }
+  
+  .tree-connector {
+    position: absolute;
+    width: 12px;
+    height: 1px;
+    background: #09204c;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  
+  .tree-node-hover {
+    transition: all 0.2s ease;
+  }
+  
+  .tree-node-hover:hover {
+    background: #f9fafb;
+  }
+  
+  .tree-indent-guide {
+    position: absolute;
+    left: 0;
+    width: 2px;
+    background: #09204c;
+    opacity: 0.5;
+  }
+  
+  .tree-level-0 { background: transparent; }
+  .tree-level-1 { background: rgba(60, 61, 67, 0.02); }
+  .tree-level-2 { background: rgba(59, 130, 246, 0.04); }
+  .tree-level-3 { background: rgba(59, 130, 246, 0.06); }
+  .tree-level-4 { background: rgba(59, 130, 246, 0.08); }
 `;
 
 const TreeSelector = ({ 
@@ -229,7 +276,7 @@ const TreeSelector = ({
   };
 
   // Render a tree node recursively
-  const renderTreeNode = (node, path = '', level = 0) => {
+  const renderTreeNode = (node, path = '', level = 0, isLast = false, parentLines = []) => {
     const currentPath = path ? `${path}.${node.name}` : node.name;
     const isSelected = selectedNodes.has(currentPath);
     const isExpanded = expandedNodes.has(currentPath);
@@ -237,84 +284,142 @@ const TreeSelector = ({
                        node.subcategories?.length > 0 || 
                        node.services?.length > 0;
     
+    const allChildren = [
+      ...(node.categories || []),
+      ...(node.subcategories || []),
+      ...(node.services || [])
+    ];
+    
     return (
-      <div key={currentPath} className="mb-3">
-        <div 
-          className={`flex items-start p-4 rounded-xl transition-all duration-300 shadow-sm hover:shadow-md ${
-            isSelected 
-              ? 'bg-gradient-to-r from-blue-500 to-indigo-500 text-white border-2 border-blue-400 transform scale-[1.02]' 
-              : 'bg-white hover:bg-gradient-to-r hover:from-gray-50 hover:to-blue-50 border-2 border-gray-200 hover:border-blue-300'
-          }`}
-          style={{ marginLeft: `${level * 28}px` }}
-        >
-          {/* Expand/Collapse button */}
-          {hasChildren && (
-            <button
-              type="button"
-              onClick={() => toggleNodeExpansion(currentPath)}
-              className={`mr-3 p-1 rounded-lg transition-all duration-300 ${
-                isSelected 
-                  ? 'text-white hover:bg-white/20' 
-                  : 'text-gray-500 hover:bg-blue-100 hover:text-blue-600'
-              }`}
-              style={{ transform: isExpanded ? 'rotate(90deg)' : 'rotate(0deg)' }}
-            >
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-              </svg>
-            </button>
+      <div key={currentPath}>
+        <div className={`relative tree-level-${Math.min(level, 4)}`}>
+          {/* Tree lines and connectors */}
+          {level > 0 && (
+            <>
+              {/* Vertical lines from parent levels */}
+              {parentLines.map((showLine, idx) => (
+                showLine && (
+                  <div 
+                    key={idx}
+                    className="tree-line" 
+                    style={{ 
+                      left: `${idx * 32 + 16}px`,
+                      top: idx === parentLines.length - 1 && isLast ? '0' : '0',
+                      height: idx === parentLines.length - 1 && isLast ? '24px' : '100%'
+                    }}
+                  />
+                )
+              ))}
+              {/* Horizontal connector */}
+              <div 
+                className="tree-connector" 
+                style={{ 
+                  left: `${(level - 1) * 32 + 16}px`,
+                  width: '30px'
+                }}
+              />
+            </>
           )}
           
-          {/* Checkbox for selection */}
-          <div className="mr-3 mt-0.5">
-            <input
-              type="checkbox"
-              checked={isSelected}
-              onChange={() => toggleNodeSelection(currentPath)}
-              className={`w-5 h-5 rounded-md cursor-pointer transition-all ${
-                isSelected 
-                  ? 'bg-white text-blue-600 border-2 border-white focus:ring-2 focus:ring-white/50' 
-                  : 'text-blue-600 border-2 border-gray-300 hover:border-blue-500 focus:ring-2 focus:ring-blue-500'
-              }`}
-            />
-          </div>
-          
-          {/* Node name and type */}
-          <div className="flex-1">
-            <div className="flex items-center flex-wrap gap-2">
-              <span className={`font-semibold text-lg ${
-                isSelected ? 'text-white' : 'text-gray-800'
-              }`}>
+          <div 
+            className={`relative flex items-center py-2 px-3 rounded-lg tree-node-hover border transition-all duration-200 ${
+              isSelected 
+                ? 'bg-blue-50 border-blue-300 shadow-sm' 
+                : 'bg-white border-transparent hover:border-gray-200 hover:shadow-sm'
+            }`}
+            style={{ 
+              marginLeft: `${level * 50}px`,
+              minHeight: '44px'
+            }}
+          >
+            {/* Expand/Collapse chevron */}
+            <div className="flex items-center" style={{ width: '24px' }}>
+              {hasChildren ? (
+                <button
+                  type="button"
+                  onClick={() => toggleNodeExpansion(currentPath)}
+                  className={`p-0.5 rounded hover:bg-gray-100 transition-colors ${
+                    isSelected ? 'text-blue-600' : 'text-gray-400'
+                  }`}
+                >
+                  <svg 
+                    className={`w-4 h-4 tree-chevron ${isExpanded ? 'tree-chevron-expanded' : ''}`} 
+                    fill="none" 
+                    stroke="currentColor" 
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
+              ) : (
+                <div className="w-4 h-4" />
+              )}
+            </div>
+            
+            {/* Node icon based on type */}
+            <div className="mr-2 ml-1">
+              {level === 0 ? (
+                <svg className="w-5 h-5 text-purple-500" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" />
+                </svg>
+              ) : hasChildren ? (
+                <svg className={`w-4 h-4 ${isExpanded ? 'text-blue-500' : 'text-gray-400'}`} fill="currentColor" viewBox="0 0 20 20">
+                  <path d={isExpanded 
+                    ? "M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" 
+                    : "M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-5.5l-1.707-1.707A1 1 0 008.086 2H4z"
+                  } />
+                </svg>
+              ) : (
+                <div className={`w-2 h-2 rounded-full ${
+                  isSelected ? 'bg-blue-500' : 'bg-gray-300'
+                }`} />
+              )}
+            </div>
+            
+            {/* Checkbox */}
+            <div className="mr-3">
+              <input
+                type="checkbox"
+                checked={isSelected}
+                onChange={() => toggleNodeSelection(currentPath)}
+                className={`w-4 h-4 rounded cursor-pointer transition-all ${
+                  isSelected 
+                    ? 'text-blue-600 border-blue-500 focus:ring-2 focus:ring-blue-200' 
+                    : 'text-blue-500 border-gray-300 hover:border-blue-400 focus:ring-2 focus:ring-blue-200'
+                }`}
+              />
+            </div>
+            
+            {/* Node name and badges */}
+            <div className="flex-1 flex items-center gap-2 min-w-0">
+              <span className={`${
+                hasChildren ? 'font-semibold' : 'font-normal'
+              } ${
+                isSelected ? 'text-blue-900' : 'text-gray-700'
+              } text-sm truncate`}>
                 {node.name}
               </span>
               {currentPath === 'root' && requiredRoot && (
-                <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold ${
-                  isSelected ? 'bg-white/20 text-white' : 'bg-purple-100 text-purple-800'
-                }`}>
-                  <svg className="-ml-0.5 mr-1 w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                  </svg>
+                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-purple-100 text-purple-700">
                   Required
                 </span>
               )}
               {level > 0 && (
-                <span className={`inline-flex items-center px-3 py-1 rounded-lg text-xs font-bold ${
-                  isSelected
-                    ? 'bg-white/20 text-white'
-                    : path.includes('services') 
-                      ? 'bg-gradient-to-r from-green-100 to-emerald-100 text-green-800 border border-green-300' 
-                      : path.includes('subcategories') 
-                        ? 'bg-gradient-to-r from-orange-100 to-amber-100 text-orange-800 border border-orange-300' 
-                        : 'bg-gradient-to-r from-blue-100 to-cyan-100 text-blue-800 border border-blue-300'
+                <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
+                  path.includes('services') 
+                    ? 'bg-green-100 text-green-700' 
+                    : path.includes('subcategories') 
+                      ? 'bg-orange-100 text-orange-700' 
+                      : 'bg-gray-100 text-gray-600'
                 }`}>
-                  {path.includes('services') ? '🎯 Service' : 
-                   path.includes('subcategories') ? '📁 Subcategory' : 
-                   '📂 Category'}
+                  {path.includes('services') ? 'Service' : 
+                   path.includes('subcategories') ? 'Subcategory' : 
+                   'Category'}
                 </span>
               )}
               {isSelected && nodeData[currentPath]?.no_of_points && (
-                <span className="inline-flex items-center px-3 py-1 rounded-lg bg-white/20 text-white text-xs font-bold">
-                  ⭐ {nodeData[currentPath].no_of_points} pts
+                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-700">
+                  {nodeData[currentPath].no_of_points} pts
                 </span>
               )}
             </div>
@@ -323,9 +428,9 @@ const TreeSelector = ({
         
         {/* Show input fields if node is selected */}
         {isSelected && nodeData[currentPath] && (
-          <div className="ml-6 mt-4 p-5 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 border-2 border-blue-300 rounded-xl shadow-lg animate-fadeIn"
-               style={{ marginLeft: `${(level * 28) + 56}px` }}>
-            <div className="grid grid-cols-2 gap-5">
+          <div className="mt-2 p-4 bg-blue-50 border border-blue-200 rounded-lg animate-fadeIn"
+               style={{ marginLeft: `${(level * 32) + 32}px` }}>
+            <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="flex items-center text-sm font-bold text-gray-800 mb-2">
                   <div className="w-6 h-6 mr-2 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-full flex items-center justify-center">
@@ -444,10 +549,23 @@ const TreeSelector = ({
         
         {/* Render children if expanded */}
         {isExpanded && hasChildren && (
-          <div className="mt-1">
-            {node.categories?.map(cat => renderTreeNode(cat, currentPath, level + 1))}
-            {node.subcategories?.map(subcat => renderTreeNode(subcat, currentPath, level + 1))}
-            {node.services?.map(service => renderTreeNode(service, currentPath, level + 1))}
+          <div className="relative">
+            {allChildren.map((child, index) => {
+              const isLastChild = index === allChildren.length - 1;
+              const newParentLines = [...parentLines];
+              if (level > 0) {
+                newParentLines[level - 1] = !isLast;
+              }
+              newParentLines[level] = !isLastChild;
+              
+              return renderTreeNode(
+                child, 
+                currentPath, 
+                level + 1, 
+                isLastChild,
+                newParentLines
+              );
+            })}
           </div>
         )}
       </div>
@@ -506,8 +624,10 @@ const TreeSelector = ({
           </div>
         </div>
         
-        <div className="bg-gradient-to-br from-gray-50 to-blue-50 border-2 border-gray-300 rounded-xl p-5 max-h-[500px] overflow-y-auto custom-scrollbar shadow-inner">
-          {renderTreeNode(treeData)}
+        <div className="bg-white border border-gray-200 rounded-lg p-4 max-h-[600px] overflow-y-auto custom-scrollbar">
+          <div className="relative">
+            {renderTreeNode(treeData, '', 0, true, [])}
+          </div>
         </div>
       </div>
       

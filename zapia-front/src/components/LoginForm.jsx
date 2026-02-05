@@ -32,14 +32,11 @@ const LoginForm = () => {
     
     if (!formData.userId.trim()) {
       newErrors.userId = 'User ID is required';
-    } else if (formData.userId.length < 3) {
-      newErrors.userId = 'User ID must be at least 3 characters';
     }
     
+    // No password validation rules as requested
     if (!formData.password) {
       newErrors.password = 'Password is required';
-    } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
     }
     
     return newErrors;
@@ -55,14 +52,53 @@ const LoginForm = () => {
     }
     
     setIsLoading(true);
+    setErrors({});
     
-    // Simulate API call
-    setTimeout(() => {
-      console.log('Login attempt:', formData);
-      // Navigate to home page with username
-      navigate('/home', { state: { username: formData.userId } });
+    try {
+      // Send POST request to backend
+      const response = await fetch('http://localhost:5000/userlogin', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_id: formData.userId,
+          password: formData.password
+        })
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // Successful login
+        console.log('Login successful:', data);
+        
+        // Store user data in localStorage for session management
+        localStorage.setItem('user_id', data.user_id);
+        localStorage.setItem('card_ids', JSON.stringify(data.card_ids || []));
+        
+        // Navigate to home page with user data
+        navigate('/home', { 
+          state: { 
+            username: data.user_id,
+            cardIds: data.card_ids,
+            message: data.message
+          } 
+        });
+      } else {
+        // Login failed
+        setErrors({ 
+          general: data.message || 'Invalid credentials. Please try again.' 
+        });
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      setErrors({ 
+        general: 'Unable to connect to server. Please try again later.' 
+      });
+    } finally {
       setIsLoading(false);
-    }, 1500);
+    }
   };
 
   return (
@@ -84,6 +120,13 @@ const LoginForm = () => {
 
           {/* Login Form */}
           <form onSubmit={handleSubmit} className="px-8 py-6">
+            {/* General Error Message */}
+            {errors.general && (
+              <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+                <p className="text-sm text-red-600">{errors.general}</p>
+              </div>
+            )}
+            
             {/* User ID Field */}
             <div className="mb-5">
               <label htmlFor="userId" className="block text-sm font-medium text-gray-700 mb-2">

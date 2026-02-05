@@ -7,7 +7,7 @@ import Step5 from './components_card_fill/Step5';
 import Step6 from './components_card_fill/Step6';
 import Step7 from './components_card_fill/Step7';
 
-const CreditCardForm = () => {
+const CreditCardForm = ({ userId }) => {
   // Step management
   const [currentStep, setCurrentStep] = useState(1);
   const totalSteps = 7;
@@ -16,6 +16,7 @@ const CreditCardForm = () => {
   const [formData, setFormData] = useState({
     bankId: "",
     bankName: "",
+    userId: userId || localStorage.getItem('user_id') || '',
     // Add more fields as needed for future steps
   });
 
@@ -38,6 +39,7 @@ const CreditCardForm = () => {
     setFormData({
       bankId: "",
       bankName: "",
+      userId: userId || localStorage.getItem('user_id') || '',
     });
   };
 

@@ -28,7 +28,7 @@ const Step6 = ({ onNext, onPrev, formData, setFormData }) => {
     try {
       const payload = {
         card_id: formData?.cardId?.toString() || "1", // Converting to string as per sample
-        userid: formData?.userId?.toString() || localStorage.getItem('userId')?.toString() || "2", // Converting to string as per sample
+        userid: formData?.userId?.toString() || localStorage.getItem('user_id')?.toString() || "2", // Converting to string as per sample
         cashback_data: treeConfig.data
       };
       
@@ -195,7 +195,7 @@ const Step6 = ({ onNext, onPrev, formData, setFormData }) => {
             <pre className="text-xs text-green-400 overflow-auto font-mono">
               {JSON.stringify({
                 card_id: formData?.cardId?.toString() || "1",
-                userid: formData?.userId?.toString() || localStorage.getItem('userId')?.toString() || "2",
+                userid: formData?.userId?.toString() || localStorage.getItem('user_id')?.toString() || "2",
                 cashback_data: treeConfig.data
               }, null, 2)}
             </pre>

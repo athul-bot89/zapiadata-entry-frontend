@@ -27,7 +27,7 @@ const Step4 = ({ onNext, onPrev, formData, setFormData }) => {
       const payload = {
         card_id: formData?.cardId || 1, // Using card ID from Step3
         point_id: formData?.pointId || 1, // Using point ID from Step2
-        userid: formData?.userId || localStorage.getItem('userId') || 1, // Using user ID from Step3 or localStorage
+        userid: formData?.userId || localStorage.getItem('user_id') || 1, // Using user ID from formData or localStorage
         point_data: treeConfig.data
       };
       
@@ -134,7 +134,7 @@ const Step4 = ({ onNext, onPrev, formData, setFormData }) => {
               {JSON.stringify({
                 card_id: formData?.cardId || 1,
                 point_id: formData?.pointId || 1,
-                userid: formData?.userId || localStorage.getItem('userId') || 1,
+                userid: formData?.userId || localStorage.getItem('user_id') || 1,
                 point_data: treeConfig.data
               }, null, 2)}
             </pre>

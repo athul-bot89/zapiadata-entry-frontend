@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const Step3 = ({ formData, setFormData, prevStep, nextStep }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [existingCards, setExistingCards] = useState([]);
+  const [selectedCardId, setSelectedCardId] = useState(formData.cardId || null);
   const [cardDetails, setCardDetails] = useState({
     cardName: formData.cardName || '',
     joiningFee: formData.joiningFee || '',
@@ -11,11 +13,41 @@ const Step3 = ({ formData, setFormData, prevStep, nextStep }) => {
     milestones: formData.milestones || [{ amount: '', benefit: '' }] // Start with one empty milestone
   });
 
+  // Fetch existing cards when component mounts
+  useEffect(() => {
+    if (formData.bankId) {
+      fetchExistingCards();
+    }
+  }, [formData.bankId]);
+
+  const fetchExistingCards = async () => {
+    try {
+      const response = await fetch(`http://localhost:5000/get-all-cards/${formData.bankId}`);
+      if (response.ok) {
+        const data = await response.json();
+        setExistingCards(data.cards || []);
+      }
+    } catch (err) {
+      console.error('Error fetching cards:', err);
+      setExistingCards([]);
+    }
+  };
+
   const handleInputChange = (field, value) => {
     setCardDetails({
       ...cardDetails,
       [field]: value
     });
+    
+    // Check if the entered card name matches an existing card
+    if (field === 'cardName') {
+      const existingCard = existingCards.find(card => card.card_name === value);
+      if (existingCard) {
+        setSelectedCardId(existingCard.card_id);
+      } else {
+        setSelectedCardId(null);
+      }
+    }
   };
 
   const handleOfferChange = (index, value) => {
@@ -84,6 +116,28 @@ const Step3 = ({ formData, setFormData, prevStep, nextStep }) => {
   };
 
   const handleSubmit = async () => {
+    // If an existing card is selected (name matches exactly), use that card_id
+    if (selectedCardId) {
+      const existingCard = existingCards.find(card => card.card_id === selectedCardId);
+      if (existingCard && existingCard.card_name === cardDetails.cardName) {
+        // Use existing card
+        setFormData({
+          ...formData,
+          cardId: selectedCardId,
+          cardName: cardDetails.cardName,
+          isExistingCard: true,
+          userId: formData.userId || localStorage.getItem('user_id') || 101
+        });
+        
+        console.log('Using existing card:', selectedCardId);
+        if (nextStep) {
+          nextStep();
+        }
+        return;
+      }
+    }
+    
+    // Otherwise, validate and create new card
     if (!validateForm()) {
       return;
     }
@@ -99,8 +153,8 @@ const Step3 = ({ formData, setFormData, prevStep, nextStep }) => {
       }
     });
 
-    // Get user ID from localStorage or session
-    const userId = localStorage.getItem('userId') || 101; // Default to 101 for testing
+    // Get user ID from formData (passed from HomePage) or localStorage
+    const userId = formData.userId || localStorage.getItem('user_id') || 101; // Default to 101 for testing
 
     // Filter out empty strings from joining offers
     const filteredOffers = cardDetails.joiningOffers.filter(offer => offer.trim() !== '');
@@ -130,18 +184,26 @@ const Step3 = ({ formData, setFormData, prevStep, nextStep }) => {
 
       const result = await response.json();
       
+      // Extract card_id from the nested card object in the response
+      const newCardId = result.card?.card_id || result.card_id || result.id;
+      if (!newCardId) {
+        throw new Error('Card was created but no card_id was returned');
+      }
+      
       // Update form data with all the collected information including the card_id
       setFormData({
         ...formData,
         ...cardDetails,
         cardCreated: true,
         cardResponse: result,
-        cardId: result.card_id || result.id, // Store the card ID for Step4
-        userId: userId
+        cardId: newCardId, // Store the card ID for Step4
+        cardName: result.card?.card_name || cardDetails.cardName,
+        isExistingCard: false,
+        userId: userId // Keep the userId in formData
       });
 
-      alert('Card created successfully! Moving to add points...');
-      console.log('Card created:', result);
+      console.log('Card created with ID:', newCardId, 'Full response:', result);
+      alert(`Card created successfully! Card ID: ${newCardId}`);
       
       // Move to Step 4 after successful card creation
       if (nextStep) {
@@ -185,13 +247,28 @@ const Step3 = ({ formData, setFormData, prevStep, nextStep }) => {
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Card Name <span className="text-red-500">*</span>
           </label>
-          <input
-            type="text"
-            value={cardDetails.cardName}
-            onChange={(e) => handleInputChange('cardName', e.target.value)}
-            placeholder="e.g., Premium Credit Card"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+          <div className="space-y-2">
+            <input
+              type="text"
+              list="existing-cards"
+              value={cardDetails.cardName}
+              onChange={(e) => handleInputChange('cardName', e.target.value)}
+              placeholder="Enter card name or select from existing"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+            <datalist id="existing-cards">
+              {existingCards.map((card) => (
+                <option key={card.card_id} value={card.card_name} />
+              ))}
+            </datalist>
+            
+            {existingCards.some(card => card.card_name === cardDetails.cardName) && (
+              <div className="p-2 bg-green-50 border border-green-200 rounded text-sm text-green-700">
+                ✓ Using existing card (ID: {selectedCardId})
+              </div>
+            )}
+          </div>
         </div>
 
         <div className="grid grid-cols-2 gap-3">
@@ -332,7 +409,7 @@ const Step3 = ({ formData, setFormData, prevStep, nextStep }) => {
           disabled={loading}
           className="flex-1 bg-green-600 text-white py-3 px-4 rounded-md hover:bg-green-700 transition duration-300 font-medium disabled:opacity-50"
         >
-          {loading ? 'Creating Card...' : 'Create Card & Add Points'}
+          {loading ? 'Processing...' : selectedCardId ? 'Continue with Existing Card' : 'Create New Card & Continue'}
         </button>
       </div>
 
