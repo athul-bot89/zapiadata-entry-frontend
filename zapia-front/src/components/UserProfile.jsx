@@ -1,364 +1,154 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const UserProfile = () => {
-  const [userInfo, setUserInfo] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    phone: '',
-    address: '',
-    city: '',
-    state: '',
-    zipCode: '',
-    country: 'United States',
-    dateOfBirth: '',
-    bio: ''
-  });
-
-  const [profileImage, setProfileImage] = useState(null);
-  const [isEditing, setIsEditing] = useState(false);
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setUserInfo(prev => ({
-      ...prev,
-      [name]: value
-    }));
+  const [cardsData, setCardsData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  
+  // Get user ID from localStorage with fallback to "2"
+  const getUserId = () => {
+    return localStorage.getItem('user_id')?.toString() || "2";
   };
 
-  const handleImageUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setProfileImage(reader.result);
-      };
-      reader.readAsDataURL(file);
+  const fetchUserCards = async () => {
+    const currentUserId = getUserId();
+    
+    setLoading(true);
+    setError('');
+    
+    try {
+      const response = await fetch(`http://localhost:5000/user/cards/${currentUserId}`);
+      
+      if (!response.ok) {
+        throw new Error(`Failed to fetch cards: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      setCardsData(data);
+    } catch (err) {
+      setError(err.message || 'Failed to fetch user cards');
+      setCardsData(null);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log('Profile updated:', userInfo);
-    setIsEditing(false);
-    // Handle profile update logic here
-  };
+  // Fetch cards on component mount
+  useEffect(() => {
+    fetchUserCards();
+  }, []);
 
-  const handleCancel = () => {
-    setIsEditing(false);
-    // Reset to original values if needed
-  };
+  // Refresh cards every 30 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetchUserCards();
+    }, 30000); // 30 seconds
+
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h2 className="text-3xl font-bold text-gray-800">User Profile</h2>
-        {!isEditing && (
-          <button
-            onClick={() => setIsEditing(true)}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition duration-300"
-          >
-            Edit Profile
-          </button>
+        <button
+          onClick={fetchUserCards}
+          disabled={loading}
+          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition duration-300 disabled:bg-gray-400 flex items-center space-x-2"
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+          <span>{loading ? 'Refreshing...' : 'Refresh'}</span>
+        </button>
+      </div>
+
+      {/* User Info Section */}
+      <div className="bg-white rounded-lg shadow-md p-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="text-lg font-semibold text-gray-800">User Information</h3>
+            <p className="text-2xl font-bold text-blue-600 mt-1">
+              {cardsData?.user_id || getUserId()}
+            </p>
+            <p className="text-sm text-gray-500 mt-1">User ID</p>
+          </div>
+          <div className="text-right">
+            {cardsData?.count !== undefined && (
+              <div className="mt-2">
+                <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                  {cardsData.count} {cardsData.count === 1 ? 'Card' : 'Cards'}
+                </span>
+              </div>
+            )}
+          </div>
+        </div>
+        
+        {error && (
+          <div className="text-red-600 text-sm mt-4 p-3 bg-red-50 rounded-md">
+            {error}
+          </div>
         )}
       </div>
 
-      {/* Profile Header Section */}
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <div className="flex items-center space-x-6">
-          <div className="relative">
-            <div className="w-32 h-32 rounded-full overflow-hidden bg-gray-200">
-              {profileImage ? (
-                <img
-                  src={profileImage}
-                  alt="Profile"
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center text-gray-400">
-                  <svg className="w-16 h-16" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
-                  </svg>
-                </div>
-              )}
-            </div>
-            {isEditing && (
-              <label className="absolute bottom-0 right-0 bg-blue-600 rounded-full p-2 cursor-pointer hover:bg-blue-700 transition">
-                <input
-                  type="file"
-                  className="hidden"
-                  accept="image/*"
-                  onChange={handleImageUpload}
-                />
-                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                </svg>
-              </label>
+      {/* User Cards Section */}
+      {cardsData?.cards && cardsData.cards.length > 0 && (
+        <div className="bg-white rounded-lg shadow-md p-6">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-lg font-semibold text-gray-800">Your Cards</h3>
+            {cardsData.message && (
+              <span className="text-sm text-green-600">{cardsData.message}</span>
             )}
           </div>
-          <div className="flex-1">
-            <h3 className="text-2xl font-semibold text-gray-800">
-              {userInfo.firstName && userInfo.lastName
-                ? `${userInfo.firstName} ${userInfo.lastName}`
-                : 'Your Name'}
-            </h3>
-            <p className="text-gray-600">{userInfo.email || 'your.email@example.com'}</p>
-            <div className="mt-2 flex items-center space-x-4 text-sm text-gray-500">
-              <span className="flex items-center">
-                <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-                {userInfo.city && userInfo.state ? `${userInfo.city}, ${userInfo.state}` : 'Location'}
-              </span>
-              <span className="flex items-center">
-                <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                </svg>
-                {userInfo.phone || 'Phone number'}
-              </span>
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {cardsData.cards.map((card) => (
+              <div key={card.card_id} className="border border-gray-200 rounded-lg p-4 hover:shadow-lg transition-shadow bg-gradient-to-br from-blue-50 to-white">
+                <div className="space-y-3">
+                  <div className="flex justify-between items-start">
+                    <div className="flex-1">
+                      <div className="text-xs text-gray-500 uppercase tracking-wide">Card Name</div>
+                      <div className="font-bold text-lg text-gray-800">
+                        {card.card_name}
+                      </div>
+                    </div>
+                    <div className="bg-blue-100 text-blue-700 px-2 py-1 rounded-full text-xs font-medium">
+                      ID: {card.card_id}
+                    </div>
+                  </div>
+                  
+                  <div className="pt-2 border-t border-gray-100">
+                    <div className="flex items-center text-sm text-gray-600">
+                      <svg className="w-4 h-4 mr-1 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                      </svg>
+                      Active
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
-      </div>
+      )}
 
-      {/* Profile Information Form */}
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Personal Information */}
-          <div>
-            <h3 className="text-lg font-semibold mb-4 text-gray-800">Personal Information</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  First Name
-                </label>
-                <input
-                  type="text"
-                  name="firstName"
-                  value={userInfo.firstName}
-                  onChange={handleInputChange}
-                  disabled={!isEditing}
-                  className={`w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                    !isEditing ? 'bg-gray-50 cursor-not-allowed' : ''
-                  }`}
-                  placeholder="John"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Last Name
-                </label>
-                <input
-                  type="text"
-                  name="lastName"
-                  value={userInfo.lastName}
-                  onChange={handleInputChange}
-                  disabled={!isEditing}
-                  className={`w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                    !isEditing ? 'bg-gray-50 cursor-not-allowed' : ''
-                  }`}
-                  placeholder="Doe"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Email Address
-                </label>
-                <input
-                  type="email"
-                  name="email"
-                  value={userInfo.email}
-                  onChange={handleInputChange}
-                  disabled={!isEditing}
-                  className={`w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                    !isEditing ? 'bg-gray-50 cursor-not-allowed' : ''
-                  }`}
-                  placeholder="john.doe@example.com"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Phone Number
-                </label>
-                <input
-                  type="tel"
-                  name="phone"
-                  value={userInfo.phone}
-                  onChange={handleInputChange}
-                  disabled={!isEditing}
-                  className={`w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                    !isEditing ? 'bg-gray-50 cursor-not-allowed' : ''
-                  }`}
-                  placeholder="+1 (555) 123-4567"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Date of Birth
-                </label>
-                <input
-                  type="date"
-                  name="dateOfBirth"
-                  value={userInfo.dateOfBirth}
-                  onChange={handleInputChange}
-                  disabled={!isEditing}
-                  className={`w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                    !isEditing ? 'bg-gray-50 cursor-not-allowed' : ''
-                  }`}
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Country
-                </label>
-                <select
-                  name="country"
-                  value={userInfo.country}
-                  onChange={handleInputChange}
-                  disabled={!isEditing}
-                  className={`w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                    !isEditing ? 'bg-gray-50 cursor-not-allowed' : ''
-                  }`}
-                >
-                  <option value="United States">United States</option>
-                  <option value="Canada">Canada</option>
-                  <option value="United Kingdom">United Kingdom</option>
-                  <option value="Australia">Australia</option>
-                  <option value="Germany">Germany</option>
-                  <option value="France">France</option>
-                  <option value="India">India</option>
-                  <option value="Other">Other</option>
-                </select>
-              </div>
-            </div>
-          </div>
-
-          {/* Address Information */}
-          <div>
-            <h3 className="text-lg font-semibold mb-4 text-gray-800">Address Information</h3>
-            <div className="grid grid-cols-1 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Street Address
-                </label>
-                <input
-                  type="text"
-                  name="address"
-                  value={userInfo.address}
-                  onChange={handleInputChange}
-                  disabled={!isEditing}
-                  className={`w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                    !isEditing ? 'bg-gray-50 cursor-not-allowed' : ''
-                  }`}
-                  placeholder="123 Main Street"
-                />
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    City
-                  </label>
-                  <input
-                    type="text"
-                    name="city"
-                    value={userInfo.city}
-                    onChange={handleInputChange}
-                    disabled={!isEditing}
-                    className={`w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                      !isEditing ? 'bg-gray-50 cursor-not-allowed' : ''
-                    }`}
-                    placeholder="New York"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    State
-                  </label>
-                  <input
-                    type="text"
-                    name="state"
-                    value={userInfo.state}
-                    onChange={handleInputChange}
-                    disabled={!isEditing}
-                    className={`w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                      !isEditing ? 'bg-gray-50 cursor-not-allowed' : ''
-                    }`}
-                    placeholder="NY"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    ZIP Code
-                  </label>
-                  <input
-                    type="text"
-                    name="zipCode"
-                    value={userInfo.zipCode}
-                    onChange={handleInputChange}
-                    disabled={!isEditing}
-                    className={`w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                      !isEditing ? 'bg-gray-50 cursor-not-allowed' : ''
-                    }`}
-                    placeholder="10001"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Bio */}
-          <div>
-            <h3 className="text-lg font-semibold mb-4 text-gray-800">About Me</h3>
-            <textarea
-              name="bio"
-              value={userInfo.bio}
-              onChange={handleInputChange}
-              disabled={!isEditing}
-              rows="4"
-              className={`w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                !isEditing ? 'bg-gray-50 cursor-not-allowed' : ''
-              }`}
-              placeholder="Tell us about yourself..."
-            />
-          </div>
-
-          {/* Form Actions */}
-          {isEditing && (
-            <div className="pt-4 flex space-x-4">
-              <button
-                type="submit"
-                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md transition duration-300"
-              >
-                Save Changes
-              </button>
-              <button
-                type="button"
-                onClick={handleCancel}
-                className="bg-gray-300 hover:bg-gray-400 text-gray-700 px-6 py-2 rounded-md transition duration-300"
-              >
-                Cancel
-              </button>
-            </div>
-          )}
-        </form>
-      </div>
+      {/* No Cards Message */}
+      {!loading && cardsData && cardsData.cards?.length === 0 && !error && (
+        <div className="bg-white rounded-lg shadow-md p-6">
+          <p className="text-gray-600 text-center">No cards found for this user.</p>
+        </div>
+      )}
 
       {/* Account Statistics */}
       <div className="bg-white rounded-lg shadow-md p-6">
         <h3 className="text-lg font-semibold mb-4 text-gray-800">Account Statistics</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="text-center p-4 bg-blue-50 rounded-lg">
-            <div className="text-3xl font-bold text-blue-600">12</div>
-            <div className="text-sm text-gray-600 mt-1">Months Active</div>
-          </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="text-center p-4 bg-green-50 rounded-lg">
-            <div className="text-3xl font-bold text-green-600">3</div>
-            <div className="text-sm text-gray-600 mt-1">Cards Added</div>
+            <div className="text-3xl font-bold text-green-600">{cardsData?.count || 0}</div>
+            <div className="text-sm text-gray-600 mt-1">Total Cards</div>
           </div>
           <div className="text-center p-4 bg-purple-50 rounded-lg">
-            <div className="text-3xl font-bold text-purple-600">98%</div>
-            <div className="text-sm text-gray-600 mt-1">Profile Complete</div>
+            <div className="text-3xl font-bold text-purple-600">{cardsData?.count > 0 ? 'Active' : 'No Cards'}</div>
+            <div className="text-sm text-gray-600 mt-1">Status</div>
           </div>
         </div>
       </div>

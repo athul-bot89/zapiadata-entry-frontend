@@ -53,6 +53,13 @@ const Step4 = ({ onNext, onPrev, formData, setFormData }) => {
     }
   };
   
+  // Navigate to next without saving (skip this step)
+  const handleSkip = () => {
+    if (onNext) {
+      onNext();
+    }
+  };
+  
   // Get tree data from config or return empty if needed
   const getTreeData = () => {
     return treeConfig?.data || {};
@@ -65,7 +72,7 @@ const Step4 = ({ onNext, onPrev, formData, setFormData }) => {
         <h3 className="text-2xl font-bold mb-2">
           💳 Configure Points & Rewards
         </h3>
-        <p className="text-blue-100">Step 4: Set up earning rules for your credit card</p>
+        <p className="text-blue-100">Step 4: Provide point reward rule details. Skip if none apply to this card</p>
       </div>
       
       {/* Display Card Information from Previous Steps */}
@@ -76,7 +83,7 @@ const Step4 = ({ onNext, onPrev, formData, setFormData }) => {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
-          <h4 className="font-semibold text-gray-800">Card Summary</h4>
+          <h4 className="font-semibold text-gray-800">Card Configuration Summary</h4>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="bg-gray-50 rounded-lg p-3">
@@ -94,6 +101,21 @@ const Step4 = ({ onNext, onPrev, formData, setFormData }) => {
           <div className="bg-gray-50 rounded-lg p-3">
             <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">Card ID</p>
             <p className="font-semibold text-gray-900">#{formData.cardId || 'Pending'}</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Info Message */}
+      <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-lg">
+        <div className="flex items-start">
+          <svg className="w-5 h-5 text-blue-500 mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+            <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+          </svg>
+          <div className="flex-1">
+            <p className="text-blue-800 font-medium">Optional Configuration</p>
+            <p className="text-blue-700 text-sm mt-1">
+              Configure point rewards for different categories. If this card doesn't offer points, you can skip this section.
+            </p>
           </div>
         </div>
       </div>
@@ -153,10 +175,10 @@ const Step4 = ({ onNext, onPrev, formData, setFormData }) => {
             <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
-            Previous Step
+            Previous
           </button>
           
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center gap-3">
             {treeConfig && treeConfig.selectedCount > 0 && (
               <div className="text-sm text-gray-500">
                 <span className="font-semibold text-gray-700">{treeConfig.selectedCount}</span> categories configured
@@ -164,30 +186,35 @@ const Step4 = ({ onNext, onPrev, formData, setFormData }) => {
             )}
             
             <button
+              onClick={handleSkip}
+              className="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-all duration-200 font-medium"
+              disabled={loading}
+            >
+              Skip This Step
+            </button>
+            
+            <button
               onClick={handleSubmit}
               disabled={loading || !treeConfig?.isValid}
-              className={`flex items-center px-6 py-3 rounded-lg font-medium transition-all duration-200 transform hover:scale-105 ${
+              className={`flex items-center px-6 py-3 rounded-lg font-medium transition-all duration-200 ${
                 loading || !treeConfig?.isValid
                   ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                  : 'bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 shadow-lg'
+                  : 'bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5'
               }`}
-              title={!treeConfig?.isValid 
-                ? 'Please configure the root node first' 
-                : 'Submit points configuration'}
             >
               {loading ? (
                 <>
-                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  <svg className="animate-spin h-5 w-5 mr-3" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                   </svg>
-                  Processing...
+                  Submitting...
                 </>
               ) : (
                 <>
-                  Submit Configuration
+                  Submit Points
                   <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 </>
               )}

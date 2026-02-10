@@ -203,20 +203,7 @@ const LoginForm = () => {
               )}
             </div>
 
-            {/* Remember Me and Forgot Password */}
-            <div className="flex items-center justify-between mb-6">
-              <label className="flex items-center">
-                <input
-                  type="checkbox"
-                  className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                  disabled={isLoading}
-                />
-                <span className="ml-2 text-sm text-gray-600">Remember me</span>
-              </label>
-              <a href="#" className="text-sm text-blue-600 hover:text-blue-800 transition duration-200">
-                Forgot password?
-              </a>
-            </div>
+
 
             {/* Submit Button */}
             <button
@@ -241,13 +228,7 @@ const LoginForm = () => {
               )}
             </button>
 
-            {/* Sign Up Link */}
-            <p className="mt-4 text-center text-sm text-gray-600">
-              Don't have an account?{' '}
-              <a href="#" className="font-medium text-blue-600 hover:text-blue-800 transition duration-200">
-                Sign up
-              </a>
-            </p>
+
           </form>
         </div>
       </div>

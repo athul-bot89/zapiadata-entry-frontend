@@ -23,8 +23,8 @@ const HomePage = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Navigation Header */}
-      <nav className="bg-gradient-to-r from-blue-600 to-blue-700 shadow-lg">
+      {/* Navigation Header - Sticky */}
+      <nav className="bg-gradient-to-r from-blue-600 to-blue-700 shadow-lg sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
@@ -43,9 +43,9 @@ const HomePage = () => {
         </div>
       </nav>
 
-      <div className="flex">
-        {/* Sidebar */}
-        <div className="w-64 bg-white shadow-lg h-[calc(100vh-4rem)]">
+      <div className="flex h-[calc(100vh-4rem)]">
+        {/* Sidebar - Fixed Position */}
+        <div className="w-64 bg-white shadow-lg sticky top-16 h-[calc(100vh-4rem)] overflow-hidden">
           <div className="p-4">
             <ul className="space-y-2">
               {menuItems.map((item) => (
@@ -67,8 +67,8 @@ const HomePage = () => {
           </div>
         </div>
 
-        {/* Main Content */}
-        <div className="flex-1 p-8">
+        {/* Main Content - Scrollable */}
+        <div className="flex-1 p-8 overflow-y-auto">
           {activeSection === 'creditCard' && <CreditCardForm />}
           {activeSection === 'userProfile' && <UserProfile />}
           {activeSection === 'aboutUs' && <AboutUs />}

@@ -11,12 +11,7 @@ const Header = () => {
             </svg>
             <h1 className="text-2xl font-bold">Zapia Portal</h1>
           </div>
-          <nav className="hidden md:flex space-x-6">
-            <a href="https://www.youtube.com/" className="hover:text-blue-200 transition duration-300">Home</a>
-            <a href="#" className="hover:text-blue-200 transition duration-300">About</a>
-            <a href="#" className="hover:text-blue-200 transition duration-300">Services</a>
-            <a href="#" className="hover:text-blue-200 transition duration-300">Contact</a>
-          </nav>
+          
         </div>
       </div>
     </header>

@@ -78,7 +78,7 @@ const Step6 = ({ onNext, onPrev, formData, setFormData }) => {
         <h3 className="text-2xl font-bold mb-2">
           💰 Configure Cashback Offers
         </h3>
-        <p className="text-purple-100">Step 6: Set up cashback rewards for your credit card</p>
+        <p className="text-purple-100">Step 6: Provide cashback reward details. Skip if this card has none.</p>
       </div>
       
       {/* Display Card Information from Previous Steps */}

@@ -4,13 +4,18 @@ const Step3 = ({ formData, setFormData, prevStep, nextStep }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [existingCards, setExistingCards] = useState([]);
-  const [selectedCardId, setSelectedCardId] = useState(formData.cardId || null);
+  const [cardFound, setCardFound] = useState(false);
+  const [fetchingDetails, setFetchingDetails] = useState(false);
   const [cardDetails, setCardDetails] = useState({
     cardName: formData.cardName || '',
     joiningFee: formData.joiningFee || '',
     renewalFee: formData.renewalFee || '',
     joiningOffers: formData.joiningOffers || [''], // Start with one empty field
-    milestones: formData.milestones || [{ amount: '', benefit: '' }] // Start with one empty milestone
+    offers: formData.offers || [''], // New offers field
+    milestones: formData.milestones || [{ amount: '', benefit: '' }], // Start with one empty milestone
+    cardImage: null, // For file upload
+    cardId: null,
+    cardImageUrl: null
   });
 
   // Fetch existing cards when component mounts
@@ -19,6 +24,19 @@ const Step3 = ({ formData, setFormData, prevStep, nextStep }) => {
       fetchExistingCards();
     }
   }, [formData.bankId]);
+
+  // Fetch card details when cardName changes (debounced)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (cardDetails.cardName.trim()) {
+        fetchCardDetailsByName();
+      } else {
+        setCardFound(false);
+      }
+    }, 800); // Debounce to avoid too many API calls
+
+    return () => clearTimeout(timer);
+  }, [cardDetails.cardName]);
 
   const fetchExistingCards = async () => {
     try {
@@ -33,20 +51,68 @@ const Step3 = ({ formData, setFormData, prevStep, nextStep }) => {
     }
   };
 
+  const fetchCardDetailsByName = async () => {
+    // Get user ID from formData or localStorage
+    const userId = formData.userId || localStorage.getItem('user_id') || 101;
+    
+    try {
+      setFetchingDetails(true);
+      const response = await fetch(
+        `http://localhost:5000/card-details?card_name=${encodeURIComponent(cardDetails.cardName)}&user_id=${userId}`
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        const card = data.card;
+
+        // Populate form with existing card details
+        setCardDetails({
+          cardName: card.card_name || cardDetails.cardName,
+          joiningFee: card.joining_fee || '',
+          renewalFee: card.renewal_fee || '',
+          joiningOffers: (card.joining_offers && card.joining_offers.length > 0) ? card.joining_offers : [''],
+          offers: (card.offers && card.offers.length > 0) ? card.offers : [''],
+          milestones: card.milestone_benefits ? 
+            Object.entries(card.milestone_benefits).map(([amount, benefit]) => ({
+              amount,
+              benefit
+            })) : [{ amount: '', benefit: '' }],
+          cardImage: null,
+          cardId: card.card_id || null,
+          cardImageUrl: card.card_image_url || null
+        });
+
+        setCardFound(true);
+        setError('');
+        console.log('Card details loaded successfully:', card);
+      } else if (response.status === 404) {
+        setCardFound(false);
+        console.log('Card not found matching name and user');
+      } else {
+        throw new Error('Failed to fetch card details');
+      }
+    } catch (err) {
+      console.error('Error fetching card details:', err);
+      setCardFound(false);
+    } finally {
+      setFetchingDetails(false);
+    }
+  };
+
   const handleInputChange = (field, value) => {
     setCardDetails({
       ...cardDetails,
       [field]: value
     });
-    
-    // Check if the entered card name matches an existing card
-    if (field === 'cardName') {
-      const existingCard = existingCards.find(card => card.card_name === value);
-      if (existingCard) {
-        setSelectedCardId(existingCard.card_id);
-      } else {
-        setSelectedCardId(null);
-      }
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setCardDetails({
+        ...cardDetails,
+        cardImage: file
+      });
     }
   };
 
@@ -71,6 +137,31 @@ const Step3 = ({ formData, setFormData, prevStep, nextStep }) => {
     setCardDetails({
       ...cardDetails,
       joiningOffers: newOffers.length === 0 ? [''] : newOffers
+    });
+  };
+
+  // Handlers for general offers
+  const handleGeneralOfferChange = (index, value) => {
+    const newOffers = [...cardDetails.offers];
+    newOffers[index] = value;
+    setCardDetails({
+      ...cardDetails,
+      offers: newOffers
+    });
+  };
+
+  const addGeneralOffer = () => {
+    setCardDetails({
+      ...cardDetails,
+      offers: [...cardDetails.offers, '']
+    });
+  };
+
+  const removeGeneralOffer = (index) => {
+    const newOffers = cardDetails.offers.filter((_, i) => i !== index);
+    setCardDetails({
+      ...cardDetails,
+      offers: newOffers.length === 0 ? [''] : newOffers
     });
   };
 
@@ -107,6 +198,7 @@ const Step3 = ({ formData, setFormData, prevStep, nextStep }) => {
       setError('Valid joining fee is required');
       return false;
     }
+    //console.log('Validating renewal fee:', typeof cardDetails.renewalFee, cardDetails.renewalFee);
     if (!cardDetails.renewalFee || cardDetails.renewalFee < 0) {
       setError('Valid renewal fee is required');
       return false;
@@ -116,28 +208,7 @@ const Step3 = ({ formData, setFormData, prevStep, nextStep }) => {
   };
 
   const handleSubmit = async () => {
-    // If an existing card is selected (name matches exactly), use that card_id
-    if (selectedCardId) {
-      const existingCard = existingCards.find(card => card.card_id === selectedCardId);
-      if (existingCard && existingCard.card_name === cardDetails.cardName) {
-        // Use existing card
-        setFormData({
-          ...formData,
-          cardId: selectedCardId,
-          cardName: cardDetails.cardName,
-          isExistingCard: true,
-          userId: formData.userId || localStorage.getItem('user_id') || 101
-        });
-        
-        console.log('Using existing card:', selectedCardId);
-        if (nextStep) {
-          nextStep();
-        }
-        return;
-      }
-    }
-    
-    // Otherwise, validate and create new card
+    // Use PUT when an existing card (by name+user) was found, otherwise POST to create
     if (!validateForm()) {
       return;
     }
@@ -157,25 +228,39 @@ const Step3 = ({ formData, setFormData, prevStep, nextStep }) => {
     const userId = formData.userId || localStorage.getItem('user_id') || 101; // Default to 101 for testing
 
     // Filter out empty strings from joining offers
-    const filteredOffers = cardDetails.joiningOffers.filter(offer => offer.trim() !== '');
+    const filteredJoiningOffers = cardDetails.joiningOffers.filter(offer => offer.trim() !== '');
+    
+    // Filter out empty strings from general offers
+    const filteredOffers = cardDetails.offers.filter(offer => offer.trim() !== '');
 
-    const requestBody = {
-      card_name: cardDetails.cardName,
-      bank_id: formData.bankId,
-      user_id: userId,
-      joining_fee: parseFloat(cardDetails.joiningFee),
-      renewal_fee: parseFloat(cardDetails.renewalFee),
-      joining_offers: filteredOffers, // Array of strings
-      milestone_benefits: milestoneBenefits
-    };
+    // Create FormData for multipart/form-data submission
+    const formDataToSend = new FormData();
+    formDataToSend.append('card_name', cardDetails.cardName);
+    formDataToSend.append('bank_id', formData.bankId);
+    formDataToSend.append('user_id', userId);
+    formDataToSend.append('joining_fee', cardDetails.joiningFee || '0');
+    formDataToSend.append('renewal_fee', cardDetails.renewalFee || '0');
+    
+    // Stringify and append JSON fields
+    formDataToSend.append('joining_offers', JSON.stringify(filteredJoiningOffers));
+    formDataToSend.append('offers', JSON.stringify(filteredOffers));
+    formDataToSend.append('milestone_benefits', JSON.stringify(milestoneBenefits));
+    
+    // Append card image if provided
+    if (cardDetails.cardImage) {
+      formDataToSend.append('card_image', cardDetails.cardImage);
+    }
 
     try {
-      const response = await fetch('http://localhost:5000/cards', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestBody)
+      // Choose method and endpoint
+      const isUpdate = cardFound && cardDetails.cardId;
+      const endpoint = isUpdate ? `http://localhost:5000/cards/${cardDetails.cardId}` : 'http://localhost:5000/cards';
+      const method = isUpdate ? 'PUT' : 'POST';
+
+      const response = await fetch(endpoint, {
+        method,
+        body: formDataToSend
+        // Note: Do not set Content-Type header; browser will set it with proper boundary
       });
 
       if (!response.ok) {
@@ -185,9 +270,9 @@ const Step3 = ({ formData, setFormData, prevStep, nextStep }) => {
       const result = await response.json();
       
       // Extract card_id from the nested card object in the response
-      const newCardId = result.card?.card_id || result.card_id || result.id;
+      const newCardId = result.card?.card_id || result.card_id || result.id || cardDetails.cardId;
       if (!newCardId) {
-        throw new Error('Card was created but no card_id was returned');
+        throw new Error('Server did not return a card_id');
       }
       
       // Update form data with all the collected information including the card_id
@@ -198,12 +283,11 @@ const Step3 = ({ formData, setFormData, prevStep, nextStep }) => {
         cardResponse: result,
         cardId: newCardId, // Store the card ID for Step4
         cardName: result.card?.card_name || cardDetails.cardName,
-        isExistingCard: false,
         userId: userId // Keep the userId in formData
       });
 
-      console.log('Card created with ID:', newCardId, 'Full response:', result);
-      alert(`Card created successfully! Card ID: ${newCardId}`);
+      console.log(`${method} successful. Card ID:`, newCardId, 'Full response:', result);
+      alert(`${method} successful! Card ID: ${newCardId}`);
       
       // Move to Step 4 after successful card creation
       if (nextStep) {
@@ -263,9 +347,83 @@ const Step3 = ({ formData, setFormData, prevStep, nextStep }) => {
               ))}
             </datalist>
             
-            {existingCards.some(card => card.card_name === cardDetails.cardName) && (
-              <div className="p-2 bg-green-50 border border-green-200 rounded text-sm text-green-700">
-                ✓ Using existing card (ID: {selectedCardId})
+            {/* Status indicator for card fetch */}
+            {fetchingDetails && (
+              <p className="text-sm text-blue-600 flex items-center gap-2">
+                <span className="animate-spin">⟳</span> Searching for existing card...
+              </p>
+            )}
+            
+            {cardFound && !fetchingDetails && (
+              <div className="p-2 bg-green-100 border border-green-400 text-green-700 rounded text-sm flex items-center gap-2">
+                <span>✓</span> Existing card loaded. Edit the details below and save to update.
+              </div>
+            )}
+            
+            {!cardFound && cardDetails.cardName.trim() && !fetchingDetails && (
+              <p className="text-sm text-gray-600">
+                No existing card found for "{cardDetails.cardName}". Add new details below.
+              </p>
+            )}
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Card Image
+          </label>
+          <div className="space-y-3">
+            {/* Show existing card image URL if available */}
+            {cardDetails.cardImageUrl && !cardDetails.cardImage && (
+              <div className="flex gap-4 items-center p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                <div className="flex-shrink-0">
+                  <img
+                    src={cardDetails.cardImageUrl}
+                    alt="Existing card"
+                    className="h-24 w-32 object-cover rounded-md border border-blue-300"
+                  />
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-gray-800">Current Card Image</p>
+                  <p className="text-xs text-gray-600 mt-1">URL: {cardDetails.cardImageUrl}</p>
+                  <p className="text-xs text-gray-500 mt-2">Upload a new image below to replace it</p>
+                </div>
+              </div>
+            )}
+            
+            <div className="border-2 border-dashed border-blue-300 rounded-lg p-4 bg-blue-50 hover:bg-blue-100 transition">
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                className="w-full cursor-pointer"
+              />
+              <p className="text-xs text-gray-600 mt-2">PNG, JPG, GIF up to 5MB</p>
+            </div>
+            
+            {cardDetails.cardImage && (
+              <div className="flex gap-4 items-center p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                <div className="flex-shrink-0">
+                  <img
+                    src={URL.createObjectURL(cardDetails.cardImage)}
+                    alt="Card preview"
+                    className="h-24 w-32 object-cover rounded-md border border-blue-300"
+                  />
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-gray-800">File selected:</p>
+                  <p className="text-sm text-gray-600 truncate">{cardDetails.cardImage.name}</p>
+                  <p className="text-xs text-gray-500 mt-1">
+                    Size: {(cardDetails.cardImage.size / 1024).toFixed(2)} KB
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setCardDetails({ ...cardDetails, cardImage: null })}
+                  className="flex-shrink-0 px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 text-sm font-medium"
+                >
+                  Remove
+                </button>
               </div>
             )}
           </div>
@@ -330,6 +488,44 @@ const Step3 = ({ formData, setFormData, prevStep, nextStep }) => {
                 <button
                   type="button"
                   onClick={() => removeOffer(index)}
+                  className="px-3 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                >
+                  ×
+                </button>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* General Offers */}
+      <div className="space-y-3 p-4 bg-purple-50 border border-purple-100 rounded-md">
+        <div className="flex justify-between items-center mb-2">
+          <h4 className="font-medium text-gray-800">General Offers </h4>
+          <button
+            type="button"
+            onClick={addGeneralOffer}
+            className="text-sm bg-purple-600 text-white px-3 py-1 rounded hover:bg-purple-700"
+          >
+            + Add Offer
+          </button>
+        </div>
+        <p className="text-xs text-gray-600">Add general offers for the card (e.g., cashback, points multipliers)</p>
+        
+        <div className="space-y-2">
+          {cardDetails.offers.map((offer, index) => (
+            <div key={index} className="flex gap-2">
+              <input
+                type="text"
+                value={offer}
+                onChange={(e) => handleGeneralOfferChange(index, e.target.value)}
+                placeholder={`Offer ${index + 1} (e.g., 5% cashback on travel, 2x points on dining)`}
+                className="flex-1 px-3 py-2 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              {cardDetails.offers.length > 1 && (
+                <button
+                  type="button"
+                  onClick={() => removeGeneralOffer(index)}
                   className="px-3 py-2 bg-red-500 text-white rounded hover:bg-red-600"
                 >
                   ×
@@ -409,7 +605,7 @@ const Step3 = ({ formData, setFormData, prevStep, nextStep }) => {
           disabled={loading}
           className="flex-1 bg-green-600 text-white py-3 px-4 rounded-md hover:bg-green-700 transition duration-300 font-medium disabled:opacity-50"
         >
-          {loading ? 'Processing...' : selectedCardId ? 'Continue with Existing Card' : 'Create New Card & Continue'}
+          {loading ? 'Processing...' : 'Continue'}
         </button>
       </div>
 

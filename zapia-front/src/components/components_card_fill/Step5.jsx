@@ -76,9 +76,9 @@ const Step5 = ({ onNext, onPrev, formData, setFormData }) => {
       {/* Header with gradient */}
       <div className="bg-gradient-to-r from-green-600 to-teal-600 rounded-lg p-6 text-white shadow-lg">
         <h3 className="text-2xl font-bold mb-2">
-          🎯 Configure Percentage Offers
+          🎯 Configure Percentage Off offers
         </h3>
-        <p className="text-green-100">Step 5: Set up special percentage-off offers for your credit card</p>
+        <p className="text-green-100">Step 5: Enter the percentage-off offers available for this credit card</p>
       </div>
       
       {/* Display Card Information from Previous Steps */}
@@ -120,7 +120,7 @@ const Step5 = ({ onNext, onPrev, formData, setFormData }) => {
           <div className="flex-1">
             <p className="text-blue-800 font-medium">Optional Configuration</p>
             <p className="text-blue-700 text-sm mt-1">
-              Configure percentage-off offers for specific categories. This step is optional - you can skip it if you don't want to offer percentage discounts.
+              Add a percentage-off offer. If none exists for this card, you can skip this section.
             </p>
           </div>
         </div>
