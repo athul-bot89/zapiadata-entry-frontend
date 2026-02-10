@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import treeData from './main_tree.json';
 import TreeSelector from './TreeSelector';
@@ -7,12 +7,43 @@ const Step6 = ({ onNext, onPrev, formData, setFormData }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [treeConfig, setTreeConfig] = useState(null);
+  const [initialFilledTree, setInitialFilledTree] = useState(null);
+  const [fetching, setFetching] = useState(false);
+  const [fetchError, setFetchError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
   // Handle data change from TreeSelector
   const handleTreeDataChange = (config) => {
     setTreeConfig(config);
   };
+
+  // Fetch existing cashback configuration for this card (if any)
+  useEffect(() => {
+    const cardId = formData?.cardId;
+    if (!cardId) return;
+
+    const fetchExisting = async () => {
+      setFetching(true);
+      setFetchError('');
+      try {
+        const res = await axios.get(`http://localhost:5000/cashback/${cardId}`);
+        // Expecting response like { card_id: 81, cashback_json: { ... } }
+        if (res?.data && res.data.cashback_json) {
+          setInitialFilledTree(res.data.cashback_json);
+          // clear any previous submission messages
+          setSuccessMessage('Loaded existing cashback configuration');
+        }
+      } catch (err) {
+        // if 404 or no data, ignore but store error for visibility
+        console.warn('No existing cashback configuration found or fetch failed', err);
+        setFetchError(err.response?.data?.message || 'No existing cashback configuration');
+      } finally {
+        setFetching(false);
+      }
+    };
+
+    fetchExisting();
+  }, [formData?.cardId]);
 
   const handleSubmit = async () => {
     // Check if configuration is valid
@@ -170,10 +201,17 @@ const Step6 = ({ onNext, onPrev, formData, setFormData }) => {
       )}
       
       {/* Tree Selector Component for Cashback Offers */}
+      {fetching && (
+        <div className="mb-4 p-3 bg-indigo-50 text-indigo-700 rounded-lg border border-indigo-100">Loading existing cashback configuration…</div>
+      )}
+      {fetchError && !fetching && (
+        <div className="mb-4 p-3 bg-yellow-50 text-yellow-800 rounded-lg border border-yellow-100">{fetchError}</div>
+      )}
       <TreeSelector 
         treeData={treeData}
         onDataChange={handleTreeDataChange}
         requiredRoot={true}
+        initialFilledTree={initialFilledTree}
         title="Configure Cashback Categories"
         instructions="Select the categories where you want to offer cashback rewards. The root node defines the default cashback rate. You can optionally select specific categories for different cashback percentages or amounts. Note: The 'no_of_points' field will represent the cashback value (percentage or fixed amount)."
       />

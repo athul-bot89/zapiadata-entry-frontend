@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import treeData from './main_tree.json';
 import TreeSelector from './TreeSelector';
@@ -7,6 +7,7 @@ const Step4 = ({ onNext, onPrev, formData, setFormData }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [treeConfig, setTreeConfig] = useState(null);
+  const [initialFilledTree, setInitialFilledTree] = useState(null);
 
   // Handle data change from TreeSelector
   const handleTreeDataChange = (config) => {
@@ -52,6 +53,25 @@ const Step4 = ({ onNext, onPrev, formData, setFormData }) => {
       setLoading(false);
     }
   };
+
+  // Try to fetch existing points JSON for this card and prefill the tree
+  useEffect(() => {
+    const fetchPoints = async () => {
+      const cardId = formData?.cardId || 1;
+      try {
+        const resp = await axios.get(`http://localhost:5000/card-points/${cardId}`);
+        if (resp?.data && resp.data.points_json) {
+          setInitialFilledTree(resp.data.points_json);
+        }
+      } catch (err) {
+        // Not fatal — no existing points, user can create new
+        console.debug('No existing points JSON or fetch failed', err?.message || err);
+      }
+    };
+
+    // Only fetch when cardId exists
+    if (formData?.cardId) fetchPoints();
+  }, [formData?.cardId]);
   
   // Navigate to next without saving (skip this step)
   const handleSkip = () => {
@@ -134,6 +154,7 @@ const Step4 = ({ onNext, onPrev, formData, setFormData }) => {
       <TreeSelector 
         treeData={treeData}
         onDataChange={handleTreeDataChange}
+        initialFilledTree={initialFilledTree}
         requiredRoot={true}
         title="Configure Points Categories"
         instructions="Select the categories where you want to offer points. The root node is required and defines the default points for all transactions. You can optionally select specific categories for different point rates."

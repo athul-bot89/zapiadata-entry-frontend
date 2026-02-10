@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import treeData from './main_tree.json';
 import TreeSelector from './TreeSelector';
@@ -8,6 +8,7 @@ const Step5 = ({ onNext, onPrev, formData, setFormData }) => {
   const [error, setError] = useState('');
   const [treeConfig, setTreeConfig] = useState(null);
   const [successMessage, setSuccessMessage] = useState('');
+  const [initialFilledTree, setInitialFilledTree] = useState(null);
 
   // Handle data change from TreeSelector
   const handleTreeDataChange = (config) => {
@@ -63,6 +64,25 @@ const Step5 = ({ onNext, onPrev, formData, setFormData }) => {
       setLoading(false);
     }
   };
+
+  // Fetch existing percentage-off JSON for this card and prefill the tree
+  useEffect(() => {
+    const fetchPercentageOff = async () => {
+      const cardId = formData?.cardId || 1;
+      try {
+        const resp = await axios.get(`http://localhost:5000/percentage-off/${cardId}`, {
+          headers: { Accept: 'application/json' }
+        });
+        if (resp?.data && resp.data.percentageoff_json) {
+          setInitialFilledTree(resp.data.percentageoff_json);
+        }
+      } catch (err) {
+        console.debug('No existing percentage-off JSON or fetch failed', err?.message || err);
+      }
+    };
+
+    if (formData?.cardId) fetchPercentageOff();
+  }, [formData?.cardId]);
   
   // Navigate to next without saving (skip this step)
   const handleSkip = () => {
@@ -150,6 +170,7 @@ const Step5 = ({ onNext, onPrev, formData, setFormData }) => {
       <TreeSelector 
         treeData={treeData}
         onDataChange={handleTreeDataChange}
+        initialFilledTree={initialFilledTree}
         requiredRoot={true}
         title="Configure Percentage Off Categories"
         instructions="Select the categories where you want to offer percentage discounts. The root node defines the default discount rate. You can optionally select specific categories for different discount percentages. Note: The 'no_of_points' field will represent the percentage off value."

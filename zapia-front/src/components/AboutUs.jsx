@@ -3,29 +3,30 @@ import React from 'react';
 const AboutUs = () => {
   const teamMembers = [
     {
-      name: 'Sarah Johnson',
+      name: 'Kokul Jose',
       role: 'CEO & Founder',
       image: null,
       bio: 'Leading Zapia with a vision for secure and innovative financial solutions.'
     },
     {
-      name: 'Michael Chen',
+      name: 'Athul Rameshan',
       role: 'CTO',
       image: null,
       bio: 'Building cutting-edge technology to make payments seamless and secure.'
     },
     {
-      name: 'Emily Rodriguez',
+      name: 'Midhun Sasi',
       role: 'Head of Security',
       image: null,
       bio: 'Ensuring your financial data is protected with industry-leading security measures.'
     },
     {
-      name: 'David Kim',
+      name: 'Sree Vidya Tycoon',
       role: 'Head of Customer Success',
       image: null,
       bio: 'Dedicated to providing exceptional support and service to all our users.'
-    }
+    },
+    
   ];
 
   const features = [

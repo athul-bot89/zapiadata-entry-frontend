@@ -89,11 +89,88 @@ const TreeSelector = ({
   onDataChange, 
   requiredRoot = true,
   title = "Configure Points Categories",
-  instructions = "Select the categories where you want to offer points."
+  instructions = "Select the categories where you want to offer points.",
+  initialFilledTree = null,
 }) => {
   const [selectedNodes, setSelectedNodes] = useState(new Set());
   const [nodeData, setNodeData] = useState({});
   const [expandedNodes, setExpandedNodes] = useState(new Set(['root']));
+
+  // Initialize selection and node data from an externally-provided filled tree
+  useEffect(() => {
+    if (!initialFilledTree) return;
+
+    const newSelected = new Set();
+    const newNodeData = {};
+    const newExpanded = new Set(['root']);
+
+    const traverse = (baseNode, filledNode, path = '') => {
+      const currentPath = path ? `${path}.${baseNode.name}` : baseNode.name;
+
+      // Only select nodes that have actual meaningful configuration values (strictly check)
+      if (filledNode) {
+        const pointsValue = filledNode.no_of_points?.toString().trim();
+        const minConValue = filledNode.min_condition?.toString().trim();
+        const maxConValue = filledNode.max_condition?.toString().trim();
+        const hasConditions = Array.isArray(filledNode.conditions) && filledNode.conditions.some(c => c && c.toString().trim() !== '');
+        
+        // Only select if there's a non-empty value (not "None", not empty string, not 0 as default)
+        const hasPoints = pointsValue && pointsValue !== '' && pointsValue !== 'None' && pointsValue !== '0';
+        const hasMinCondition = minConValue && minConValue !== '' && minConValue !== 'None';
+        const hasMaxCondition = maxConValue && maxConValue !== '' && maxConValue !== 'None';
+        
+        const hasConfig = hasPoints || hasMinCondition || hasMaxCondition || hasConditions;
+        
+        if (hasConfig) {
+          newSelected.add(currentPath);
+          newNodeData[currentPath] = {
+            no_of_points: filledNode.no_of_points || '',
+            min_condition: filledNode.min_condition || '',
+            max_condition: filledNode.max_condition || '',
+            ismajor: !!filledNode.ismajor,
+            conditions: filledNode.conditions || ['']
+          };
+        }
+      }
+
+      // If any child is selected, expand this node
+      const childKinds = ['categories', 'subcategories', 'services'];
+      for (const kind of childKinds) {
+        const baseChildren = baseNode[kind] || [];
+        const filledChildren = (filledNode && filledNode[kind]) || [];
+        for (let i = 0; i < baseChildren.length; i++) {
+          const bChild = baseChildren[i];
+          const fChild = filledChildren.find(fc => fc.name === bChild.name) || null;
+          traverse(bChild, fChild, currentPath);
+        }
+      }
+    };
+
+    // Start traversal using provided base tree structure
+    try {
+      traverse(treeData, initialFilledTree, '');
+
+      // Build expanded set: expand nodes that are parents of selected nodes
+      const addParents = (path) => {
+        const parts = path.split('.');
+        let cur = parts[0];
+        newExpanded.add(cur);
+        for (let i = 1; i < parts.length; i++) {
+          cur = `${cur}.${parts[i]}`;
+          newExpanded.add(cur);
+        }
+      };
+
+      for (const p of newSelected) addParents(p);
+
+      setSelectedNodes(newSelected);
+      setNodeData(newNodeData);
+      setExpandedNodes(newExpanded);
+    } catch (e) {
+      // ignore initialization errors
+      console.error('Failed to initialize TreeSelector from initialFilledTree', e);
+    }
+  }, [initialFilledTree, treeData]);
 
   // Notify parent component of data changes
   useEffect(() => {
