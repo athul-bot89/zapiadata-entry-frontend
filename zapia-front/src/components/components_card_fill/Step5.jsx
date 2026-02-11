@@ -34,7 +34,7 @@ const Step5 = ({ onNext, onPrev, formData, setFormData }) => {
       };
       
       // Make POST request to the percentage-off endpoint
-      const response = await axios.post('http://localhost:5000/percentage-off', payload, {
+      const response = await axios.post('https://zapia-backend-fuang8emcbdxhhau.centralindia-01.azurewebsites.net/percentage-off', payload, {
         headers: {
           'Content-Type': 'application/json',
         }
@@ -70,7 +70,7 @@ const Step5 = ({ onNext, onPrev, formData, setFormData }) => {
     const fetchPercentageOff = async () => {
       const cardId = formData?.cardId || 1;
       try {
-        const resp = await axios.get(`http://localhost:5000/percentage-off/${cardId}`, {
+        const resp = await axios.get(`https://zapia-backend-fuang8emcbdxhhau.centralindia-01.azurewebsites.net/percentage-off/${cardId}`, {
           headers: { Accept: 'application/json' }
         });
         if (resp?.data && resp.data.percentageoff_json) {
@@ -189,7 +189,7 @@ const Step5 = ({ onNext, onPrev, formData, setFormData }) => {
             <span className="text-xs text-gray-500">Click to expand</span>
           </summary>
           <div className="p-6 bg-gray-900 border-t border-gray-200">
-            <p className="text-xs text-gray-400 mb-2 font-mono">POST http://localhost:5000/percentage-off</p>
+            <p className="text-xs text-gray-400 mb-2 font-mono">POST https://zapia-backend-fuang8emcbdxhhau.centralindia-01.azurewebsites.net/percentage-off</p>
             <pre className="text-xs text-green-400 overflow-auto font-mono">
               {JSON.stringify({
                 card_id: formData?.cardId?.toString() || "1",

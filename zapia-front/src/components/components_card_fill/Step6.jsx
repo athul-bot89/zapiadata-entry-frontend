@@ -26,7 +26,7 @@ const Step6 = ({ onNext, onPrev, formData, setFormData }) => {
       setFetching(true);
       setFetchError('');
       try {
-        const res = await axios.get(`http://localhost:5000/cashback/${cardId}`);
+        const res = await axios.get(`https://zapia-backend-fuang8emcbdxhhau.centralindia-01.azurewebsites.net/cashback/${cardId}`);
         // Expecting response like { card_id: 81, cashback_json: { ... } }
         if (res?.data && res.data.cashback_json) {
           setInitialFilledTree(res.data.cashback_json);
@@ -64,7 +64,7 @@ const Step6 = ({ onNext, onPrev, formData, setFormData }) => {
       };
       
       // Make POST request to the cashback endpoint
-      const response = await axios.post('http://localhost:5000/cashback', payload, {
+      const response = await axios.post('https://zapia-backend-fuang8emcbdxhhau.centralindia-01.azurewebsites.net/cashback', payload, {
         headers: {
           'Content-Type': 'application/json',
         }
@@ -229,7 +229,7 @@ const Step6 = ({ onNext, onPrev, formData, setFormData }) => {
             <span className="text-xs text-gray-500">Click to expand</span>
           </summary>
           <div className="p-6 bg-gray-900 border-t border-gray-200">
-            <p className="text-xs text-gray-400 mb-2 font-mono">POST http://localhost:5000/cashback</p>
+            <p className="text-xs text-gray-400 mb-2 font-mono">POST https://zapia-backend-fuang8emcbdxhhau.centralindia-01.azurewebsites.net/cashback</p>
             <pre className="text-xs text-green-400 overflow-auto font-mono">
               {JSON.stringify({
                 card_id: formData?.cardId?.toString() || "1",

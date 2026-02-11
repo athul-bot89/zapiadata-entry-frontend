@@ -21,7 +21,7 @@ A reusable component for selecting or creating banks.
   - Default: `true`
 
 - `apiUrl` (string, optional): Base URL for the API endpoints
-  - Default: `"http://localhost:5000"`
+  - Default: `"https://zapia-backend-fuang8emcbdxhhau.centralindia-01.azurewebsites.net"`
 
 #### Usage Example
 
@@ -40,7 +40,7 @@ function MyForm() {
     <BankSelection 
       onBankSelect={handleBankSelect}
       showCreateOption={true}
-      apiUrl="http://localhost:5000"
+      apiUrl="https://zapia-backend-fuang8emcbdxhhau.centralindia-01.azurewebsites.net"
       className="my-custom-class"
     />
   );

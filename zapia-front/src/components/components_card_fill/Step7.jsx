@@ -11,7 +11,7 @@ const Step7 = ({ formData, onReset }) => {
       const userId = formData.userId || localStorage.getItem('user_id');
       if (formData.cardId && userId) {
         try {
-          const response = await fetch('http://localhost:5000/user/add-cards', {
+          const response = await fetch('https://zapia-backend-fuang8emcbdxhhau.centralindia-01.azurewebsites.net/user/add-cards', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',

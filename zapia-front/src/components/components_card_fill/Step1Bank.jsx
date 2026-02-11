@@ -14,7 +14,7 @@ const Step1Bank = ({ formData, setFormData, nextStep }) => {
     setLoading(true);
     setError('');
     try {
-      const response = await fetch('http://localhost:5000/banks');
+      const response = await fetch('https://zapia-backend-fuang8emcbdxhhau.centralindia-01.azurewebsites.net/banks');
       if (!response.ok) {
         throw new Error('Failed to fetch banks');
       }

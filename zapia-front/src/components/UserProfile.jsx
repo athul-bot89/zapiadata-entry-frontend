@@ -17,7 +17,7 @@ const UserProfile = () => {
     setError('');
     
     try {
-      const response = await fetch(`http://localhost:5000/user/cards/${currentUserId}`);
+      const response = await fetch(`https://zapia-backend-fuang8emcbdxhhau.centralindia-01.azurewebsites.net/user/cards/${currentUserId}`);
       
       if (!response.ok) {
         throw new Error(`Failed to fetch cards: ${response.status}`);

@@ -24,7 +24,7 @@ const Step2Details = ({ formData, setFormData, nextStep, prevStep }) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch(`http://localhost:5000/points/${formData.bankId}`);
+      const response = await fetch(`https://zapia-backend-fuang8emcbdxhhau.centralindia-01.azurewebsites.net/points/${formData.bankId}`);
       if (!response.ok) {
         throw new Error('Failed to fetch points');
       }
@@ -73,7 +73,7 @@ const Step2Details = ({ formData, setFormData, nextStep, prevStep }) => {
       };
 
       // Make API call to create the new point
-      const response = await fetch('http://localhost:5000/points', {
+      const response = await fetch('https://zapia-backend-fuang8emcbdxhhau.centralindia-01.azurewebsites.net/points', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

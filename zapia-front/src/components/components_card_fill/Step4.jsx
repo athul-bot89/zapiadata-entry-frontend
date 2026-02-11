@@ -33,7 +33,7 @@ const Step4 = ({ onNext, onPrev, formData, setFormData }) => {
       };
       
       // Make POST request to the endpoint
-      const response = await axios.post('http://localhost:5000/card-points', payload, {
+      const response = await axios.post('https://zapia-backend-fuang8emcbdxhhau.centralindia-01.azurewebsites.net/card-points', payload, {
         headers: {
           'Content-Type': 'application/json',
         }
@@ -59,7 +59,7 @@ const Step4 = ({ onNext, onPrev, formData, setFormData }) => {
     const fetchPoints = async () => {
       const cardId = formData?.cardId || 1;
       try {
-        const resp = await axios.get(`http://localhost:5000/card-points/${cardId}`);
+        const resp = await axios.get(`https://zapia-backend-fuang8emcbdxhhau.centralindia-01.azurewebsites.net/card-points/${cardId}`);
         if (resp?.data && resp.data.points_json) {
           setInitialFilledTree(resp.data.points_json);
         }

@@ -40,7 +40,7 @@ const Step3 = ({ formData, setFormData, prevStep, nextStep }) => {
 
   const fetchExistingCards = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/get-all-cards/${formData.bankId}`);
+      const response = await fetch(`https://zapia-backend-fuang8emcbdxhhau.centralindia-01.azurewebsites.net/get-all-cards/${formData.bankId}`);
       if (response.ok) {
         const data = await response.json();
         setExistingCards(data.cards || []);
@@ -58,7 +58,7 @@ const Step3 = ({ formData, setFormData, prevStep, nextStep }) => {
     try {
       setFetchingDetails(true);
       const response = await fetch(
-        `http://localhost:5000/card-details?card_name=${encodeURIComponent(cardDetails.cardName)}&user_id=${userId}`
+        `https://zapia-backend-fuang8emcbdxhhau.centralindia-01.azurewebsites.net/card-details?card_name=${encodeURIComponent(cardDetails.cardName)}&user_id=${userId}`
       );
 
       if (response.ok) {
@@ -254,7 +254,7 @@ const Step3 = ({ formData, setFormData, prevStep, nextStep }) => {
     try {
       // Choose method and endpoint
       const isUpdate = cardFound && cardDetails.cardId;
-      const endpoint = isUpdate ? `http://localhost:5000/cards/${cardDetails.cardId}` : 'http://localhost:5000/cards';
+      const endpoint = isUpdate ? `https://zapia-backend-fuang8emcbdxhhau.centralindia-01.azurewebsites.net/cards/${cardDetails.cardId}` : 'https://zapia-backend-fuang8emcbdxhhau.centralindia-01.azurewebsites.net/cards';
       const method = isUpdate ? 'PUT' : 'POST';
 
       const response = await fetch(endpoint, {

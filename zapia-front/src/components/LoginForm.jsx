@@ -56,7 +56,7 @@ const LoginForm = () => {
     
     try {
       // Send POST request to backend
-      const response = await fetch('http://localhost:5000/userlogin', {
+      const response = await fetch('https://zapia-backend-fuang8emcbdxhhau.centralindia-01.azurewebsites.net/userlogin', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
